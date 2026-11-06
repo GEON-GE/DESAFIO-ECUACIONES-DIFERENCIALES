@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Simulador académico de adsorción de plomo: solución analítica, Heun y Runge-Kutta 4.">
+  <title>Simulador de Adsorción de Plomo | Viacha</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script defer src="js/app.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#inicio" aria-label="Inicio del simulador">
+      <span class="brand-mark">H₂O</span>
+      <span><strong>PROYECTO EDO</strong><small>ADSORCIÓN DE PLOMO · VIACHA</small></span>
+    </a>
+    <nav>
+      <a href="#problema">Problema</a>
+      <a href="#modelo">Modelo</a>
+      <a href="#simulador">Simulador</a>
+      <a href="#resultados">Resultados</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero" id="inicio">
+      <div class="hero-copy">
+        <span class="eyebrow"><span class="dot"></span> MÉTODOS NUMÉRICOS · DESAFÍO INDIVIDUAL</span>
+        <h1>Modelación matemática de la <em>adsorción de plomo</em> en agua</h1>
+        <p class="hero-lead">Simulación académica de la disminución de la concentración de plomo mediante un modelo de ecuación diferencial ordinaria de primer orden, aplicado al contexto de la comunidad de Chiripa, Viacha.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#simulador">Iniciar simulación <span>→</span></a>
+          <a class="btn btn-ghost" href="#modelo">Explorar el modelo</a>
+        </div>
+        <div class="hero-meta">
+          <span>📍 Comunidad de Chiripa</span>
+          <span>Distrito 3 · Viacha · La Paz</span>
+        </div>
+      </div>
+      <div class="hero-art" aria-label="Ilustración conceptual de agua y filtración">
+        <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
+        <div class="water-drop">H₂O</div>
+        <div class="art-label label-top"><b>EDO</b><small>Primer orden</small></div>
+        <div class="art-label label-bottom"><b>RK4</b><small>Alta precisión</small></div>
+        <div class="art-caption">SIMULACIÓN MATEMÁTICA<br><strong>NO ES UN ANÁLISIS DE LABORATORIO</strong></div>
+      </div>
+    </section>
+
+    <section class="notice">
+      <span class="notice-icon">i</span>
+      <p><strong>Alcance académico:</strong> los valores iniciales y parámetros son hipotéticos. Este simulador no demuestra que exista contaminación por plomo en Chiripa, no valida la eficacia real del carbón activado y no determina si el agua es potable.</p>
+    </section>
+
+    <section class="section" id="problema">
+      <div class="section-heading">
+        <span class="eyebrow">01 · CONTEXTO</span>
+        <h2>¿Qué estudia este desafío?</h2>
+        <p>Se representa un proceso idealizado en el que la concentración de plomo disuelto disminuye con el tiempo y se aproxima a un valor de equilibrio. La pregunta central es: ¿qué tan precisamente aproximan Heun y RK4 esta evolución frente a la solución analítica?</p>
+      </div>
+      <div class="context-grid">
+        <article class="info-card">
+          <div class="card-icon">⌖</div><h3>Comunidad considerada</h3>
+          <p>Comunidad de Chiripa, Distrito 3 del municipio de Viacha, departamento de La Paz.</p>
+        </article>
+        <article class="info-card">
+          <div class="card-icon">◉</div><h3>Problema de estudio</h3>
+          <p>Comprender matemáticamente cómo podría variar una concentración hipotética de plomo durante un proceso de adsorción.</p>
+        </article>
+        <article class="info-card">
+          <div class="card-icon">↗</div><h3>Pregunta del desafío</h3>
+          <p>¿Qué tan bien aproximan Heun y RK4 la evolución descrita por la ecuación diferencial?</p>
+        </article>
+      </div>
+      <div class="goal-strip"><div><small>META CUANTIFICABLE DE LA SIMULACIÓN</small><strong>Estudiar C(t) durante 10 horas</strong></div><p>Con los valores de referencia, comparar la concentración final analítica y los cuatro ensayos numéricos, cuantificando sus errores absolutos y relativos.</p></div>
+    </section>
+
+    <section class="section model-section" id="modelo">
+      <div class="section-heading">
+        <span class="eyebrow">02 · FORMULACIÓN DEL MODELO</span>
+        <h2>La ecuación que describe el proceso</h2>
+        <p>Se adopta una cinética de aproximación de primer orden hacia una concentración de equilibrio constante.</p>
+      </div>
+      <div class="equation-panel">
+        <div class="equation-main">dC/dt = −k (C − C<sub>e</sub>)</div>
+        <div class="equation-caption">Ecuación diferencial ordinaria de primer orden</div>
+        <div class="equation-solution">C(t) = C<sub>e</sub> + (C<sub>0</sub> − C<sub>e</sub>) e<sup>−kt</sup></div>
+        <div class="equation-caption">Solución analítica para k constante</div>
+      </div>
+      <div class="model-details">
+        <div>
+          <h3>Variables y parámetros</h3>
+          <div class="table-wrap">
+            <table class="data-table compact">
+              <thead><tr><th>Símbolo</th><th>Significado</th><th>Unidad</th></tr></thead>
+              <tbody>
+                <tr><td><b>C(t)</b></td><td>Concentración de plomo en el tiempo</td><td>mg/L</td></tr>
+                <tr><td><b>t</b></td><td>Tiempo transcurrido</td><td>h</td></tr>
+                <tr><td><b>C₀</b></td><td>Concentración inicial</td><td>mg/L</td></tr>
+                <tr><td><b>Cₑ</b></td><td>Concentración de equilibrio del modelo</td><td>mg/L</td></tr>
+                <tr><td><b>k</b></td><td>Constante cinética hipotética</td><td>h⁻¹</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="assumptions">
+          <h3>Supuestos principales</h3>
+          <ul>
+            <li>El volumen y las condiciones del sistema se consideran constantes.</li>
+            <li>La constante k no cambia durante la simulación.</li>
+            <li>La concentración de equilibrio permanece fija.</li>
+            <li>No se agregan nuevas fuentes de plomo al sistema.</li>
+            <li>El modelo no incorpora saturación del adsorbente, pH, temperatura ni competencia con otros contaminantes.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+
+    <section class="section analytic-section" id="solucion-analitica">
+      <div class="section-heading">
+        <span class="eyebrow">03 · SOLUCIÓN ANALÍTICA</span>
+        <h2>Solución exacta y comprobación</h2>
+        <p>La solución analítica es la referencia exacta del modelo. Los métodos de Heun y RK4 se comparan contra esta función en cada iteración.</p>
+      </div>
+      <div class="analytic-grid">
+        <article class="derivation-card">
+          <h3>Separación de variables</h3>
+          <div class="derivation-step"><span>01</span><div><small>Ecuación diferencial</small><b>dC/dt = −k(C − Cₑ)</b></div></div>
+          <div class="derivation-step"><span>02</span><div><small>Separar variables</small><b>dC/(C − Cₑ) = −k dt</b></div></div>
+          <div class="derivation-step"><span>03</span><div><small>Integrar</small><b>ln|C − Cₑ| = −kt + K</b></div></div>
+          <div class="derivation-step"><span>04</span><div><small>Despejar C(t)</small><b>C(t) = Cₑ + A e<sup>−kt</sup></b></div></div>
+          <div class="derivation-step"><span>05</span><div><small>Aplicar C(0) = C₀</small><b>A = C₀ − Cₑ</b></div></div>
+        </article>
+        <article class="verification-card">
+          <span class="verification-label">SOLUCIÓN ANALÍTICA GENERAL</span>
+          <div class="verification-equation">C(t) = C<sub>e</sub> + (C<sub>0</sub> − C<sub>e</sub>)e<sup>−kt</sup></div>
+          <div class="verification-line"></div>
+          <h3>Comprobación por sustitución</h3>
+          <p>Derivando la solución:</p>
+          <b class="math-line">dC/dt = −k(C₀ − Cₑ)e<sup>−kt</sup></b>
+          <p>Y sustituyendo en el lado derecho:</p>
+          <b class="math-line">−k(C − Cₑ) = −k(C₀ − Cₑ)e<sup>−kt</sup></b>
+          <div class="check-result">✓ Ambos lados son iguales y C(0) = C₀.</div>
+        </article>
+      </div>
+      <div class="assumption-note"><b>Interpretación:</b> si C₀ es mayor que Cₑ, la concentración disminuye y se aproxima al equilibrio. Si C₀ es menor que Cₑ, aumenta hacia ese equilibrio. La ecuación representa una aproximación simplificada, no una validación experimental del proceso de adsorción.</div>
+    </section>
+
+    <section class="section simulator-section" id="simulador">
+      <div class="section-heading">
+        <span class="eyebrow">03 · LABORATORIO INTERACTIVO</span>
+        <h2>Configura y ejecuta la simulación</h2>
+        <p>Modifica las condiciones iniciales. Los cuatro ensayos se recalculan con los mismos parámetros para que la comparación sea consistente.</p>
+      </div>
+      <div class="sim-layout">
+        <aside class="control-panel">
+          <div class="panel-title"><span>⚙</span><div><h3>Parámetros de entrada</h3><small>Valores editables</small></div></div>
+          <form id="parameterForm">
+            <label>Concentración inicial C₀ <span>(mg/L)</span>
+              <input id="c0" type="number" min="0" step="any" value="0.50" required>
+            </label>
+            <label>Concentración de equilibrio Cₑ <span>(mg/L)</span>
+              <input id="ce" type="number" min="0" step="any" value="0.10" required>
+            </label>
+            <label>Constante cinética k <span>(h⁻¹)</span>
+              <input id="k" type="number" min="0.000001" step="any" value="0.20" required>
+            </label>
+            <label>Tiempo final T <span>(horas)</span>
+              <input id="tEnd" type="number" min="0.01" step="any" value="10" required>
+            </label>
+            <div class="step-fields">
+              <label>Tamaño de paso h₁ <span>(horas)</span><input id="h1" type="number" min="0.000001" step="any" value="1" required></label>
+              <label>Tamaño de paso h₂ <span>(horas)</span><input id="h2" type="number" min="0.000001" step="any" value="0.5" required></label>
+            </div>
+            <p class="input-hint">El tiempo final debe ser divisible exactamente por ambos tamaños de paso. Se recomienda que h₂ sea menor que h₁.</p>
+            <div id="validationMessage" class="validation" role="status" aria-live="polite"></div>
+            <div class="form-actions">
+              <button class="btn btn-primary full" type="submit">Calcular resultados <span>→</span></button>
+              <button class="reset-btn" id="resetBtn" type="button">Restablecer valores iniciales</button>
+            </div>
+          </form>
+        </aside>
+
+        <div class="results-panel">
+          <div class="metric-grid">
+            <article class="metric-card"><span>Concentración inicial</span><strong id="metricInitial">0.500000</strong><small>mg/L</small></article>
+            <article class="metric-card"><span>Concentración analítica final</span><strong id="metricFinal">0.154134</strong><small>mg/L</small></article>
+            <article class="metric-card"><span>Reducción simulada</span><strong id="metricReduction">69.17%</strong><small>en el intervalo</small></article>
+          </div>
+          <div class="chart-card">
+            <div class="chart-header"><div><h3>Evolución de la concentración</h3><p>Solución exacta frente a Heun y RK4</p></div><span class="chart-unit">mg/L · horas</span></div>
+            <div class="chart-container"><canvas id="concentrationChart" role="img" aria-label="Gráfica de concentración según el tiempo"></canvas></div>
+          </div>
+          <div class="chart-card error-chart-card">
+            <div class="chart-header"><div><h3>Error absoluto al tiempo final</h3><p>Comparación de los cuatro ensayos</p></div></div>
+            <div class="chart-container short"><canvas id="errorChart" role="img" aria-label="Gráfica de errores absolutos"></canvas></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="resultados">
+      <div class="section-heading">
+        <span class="eyebrow">04 · ANÁLISIS NUMÉRICO</span>
+        <h2>Resultados y comparación</h2>
+        <p>Consulta las iteraciones de cada método, el valor exacto y los errores en cada instante.</p>
+      </div>
+      <div class="comparison-cards" id="comparisonCards"></div>
+      <div class="table-card">
+        <div class="table-toolbar">
+          <div><h3>Tabla de iteraciones</h3><p>Valores numéricos y errores frente a la solución analítica.</p></div>
+          <div class="selectors">
+            <label for="methodSelect">Método</label>
+            <select id="methodSelect"><option value="heun">Heun (RK2)</option><option value="rk4">Runge-Kutta 4</option></select>
+            <label for="stepSelect">Paso</label>
+            <select id="stepSelect"><option value="h1">h₁</option><option value="h2">h₂</option></select>
+          </div>
+        </div>
+        <div class="table-wrap table-scroll">
+          <table class="data-table" id="iterationTable">
+            <thead><tr><th>n</th><th>t (h)</th><th>Analítica (mg/L)</th><th>Numérica (mg/L)</th><th>Error absoluto</th><th>Error relativo (%)</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <p class="table-note">El error relativo porcentual se muestra como “—” cuando el valor exacto es cero. Los cálculos internos conservan precisión completa; la pantalla redondea para facilitar la lectura.</p>
+      </div>
+    </section>
+
+    <section class="section method-section">
+      <div class="section-heading">
+        <span class="eyebrow">05 · PROCEDIMIENTOS</span>
+        <h2>¿Cómo calculan los métodos?</h2>
+      </div>
+      <div class="method-grid">
+        <article class="method-card">
+          <div class="method-top"><span class="method-number">02</span><span class="tag">Heun · RK2</span></div>
+          <h3>Predictor y corrector</h3>
+          <p>Primero estima el siguiente valor con la pendiente inicial y luego lo corrige promediando la pendiente inicial y la pendiente estimada al final del paso.</p>
+          <div class="formula-box">k₁ = f(tₙ, Cₙ)<br>C* = Cₙ + h k₁<br>k₂ = f(tₙ+h, C*)<br><b>Cₙ₊₁ = Cₙ + (h/2)(k₁+k₂)</b></div>
+        </article>
+        <article class="method-card featured">
+          <div class="method-top"><span class="method-number">04</span><span class="tag">RK4 clásico</span></div>
+          <h3>Cuatro pendientes</h3>
+          <p>Calcula cuatro pendientes: al inicio, en dos puntos medios y al final del intervalo. Después combina las pendientes con pesos 1, 2, 2 y 1.</p>
+          <div class="formula-box">k₁ = f(tₙ,Cₙ)<br>k₂ = f(tₙ+h/2,Cₙ+hk₁/2)<br>k₃ = f(tₙ+h/2,Cₙ+hk₂/2)<br>k₄ = f(tₙ+h,Cₙ+hk₃)<br><b>Cₙ₊₁ = Cₙ + h(k₁+2k₂+2k₃+k₄)/6</b></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section interpretation-section">
+      <div class="section-heading">
+        <span class="eyebrow">06 · INTERPRETACIÓN</span>
+        <h2>Lectura de los resultados</h2>
+      </div>
+      <div class="interpretation-box" id="interpretationBox">
+        <div class="interpret-icon">↗</div><div><h3>Interpretación automática</h3><p>Ejecuta la simulación para generar la interpretación de los resultados.</p></div>
+      </div>
+      <div class="limitations">
+        <h3>Limitaciones y uso responsable</h3>
+        <p>La ecuación representa una aproximación matemática simplificada. Para describir un tratamiento real se necesitan datos experimentales y considerar características del agua y del adsorbente, como pH, temperatura, dosis, tiempo de contacto, competencia entre sustancias y saturación. La simulación no certifica potabilidad ni reemplaza análisis de laboratorio o recomendaciones de autoridades sanitarias.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-brand"><span class="brand-mark">H₂O</span><div><strong>MODELACIÓN MATEMÁTICA DE LA ADSORCIÓN DE PLOMO – VIACHA</strong><small>Métodos Numéricos · Heun · RK4 · Solución analítica</small></div></div>
+    <p>Proyecto académico con parámetros hipotéticos. Comunidad de Chiripa, Distrito 3 de Viacha.</p>
+  </footer>
+</body>
+</html>
